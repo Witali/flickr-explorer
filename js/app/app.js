@@ -5,10 +5,12 @@
  * 
  */
 
-(function(){
+Ext.onReady(function(){
 	
 	new Ext.ux.Application();
-})();
+	
+	
+});
 
 
 

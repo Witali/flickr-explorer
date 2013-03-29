@@ -8,7 +8,7 @@ Ext.ux.Application = Ext.extend(Ext.Window, {
 	config: {
 		flickrParams: {
 			api_key: '7031f95952091a7a6e9c9a1f61160b70',
-			api_sig: '',
+			method: 'flickr.people.getPublicPhotos',
 			user_id: '21075872@N02', // nvidia id
 			perms: 'read'
 		},
@@ -32,11 +32,10 @@ Ext.ux.Application = Ext.extend(Ext.Window, {
 	},
 	
 	items: [{
-		xtype: 'thumbnails'
-			
-	}, {
 		xtype: 'imgview'
 		
+	}, {
+		xtype: 'pagingtoolbar'
 	}]
 	
 });
