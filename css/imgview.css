@@ -46,6 +46,19 @@
 /*    display: block;*/
 }
 
+.imgview img.imgview-large {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.imgview .imgview-large-block {
+	position: absolute;
+	background: black;
+	text-align: center;
+	line-height: 100%;
+	vertical-align: middle;
+}
+
 .imgview li strong {
     color: #000;
     display: block;
