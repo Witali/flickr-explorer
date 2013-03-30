@@ -17,7 +17,9 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			'</tpl>',
 		'</ul>',
 		'<div class="imgview-large-block" style="display: none">',
+			'<table class="imgview-large-table"><tr><td>',
 			'<img class="imgview-large" src="{Ext.BLANK_IMAGE_URL}" />',
+			'</td></tr><table>',
 			'<a class="imgview-close">&times;</a>',
 			'<a class="imgview-next">&gt;</a>',
 			'<a class="imgview-prev">&lt;</a>',
@@ -71,7 +73,8 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			ownEl = me.ownerCt.el,
 			closeBtn = body.select('.imgview-close'),
 			imgBlock = body.select('.imgview-large-block'),
-			imgLarge = body.select('img.imgview-large').item(0).dom;
+			imgLarge = body.select('img.imgview-large').item(0),
+			imgLargeDom = imgLarge.dom;
 
         var selNode = me.getSelectedNodes()[0],
 			selectedEl = new Ext.Element(selNode);
@@ -85,7 +88,7 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 		var img = new Image();
 		img.onload = function() {
 			myMask.hide();
-			imgLarge.setAttribute('src', img.src);
+			imgLargeDom.setAttribute('src', img.src);
 			
 			var fromRegion = selectedEl.getRegion(),
 				toRegion = ownEl.getRegion();
