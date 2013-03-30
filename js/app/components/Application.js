@@ -3,7 +3,7 @@
 
 Ext.ns('Ext.ux');
 
-Ext.ux.Application = Ext.extend(Ext.Window, {
+Ext.ux.Application = Ext.extend(Ext.Viewport, {
 	
 	config: {
 		flickrParams: {
@@ -17,25 +17,37 @@ Ext.ux.Application = Ext.extend(Ext.Window, {
 
 	},
 	
-	constructor: function() {
-		
-		
+	constructor: function(cfg) {
+		Ext.ux.Application.prototype.constructor.apply(this, arguments);
+        
 	},
 	
 	initComponent: function() {
 		
 	},
 	
-	
-	buildUrl: function() {
+	buildSrcUrl: function() {
 		
 	},
+	
+	initStore: function() {
+		var store = new Ext.data.Store({
+			url: this.buildSrcUrl(),
+			root: 'images',
+			fields: [
+				'name', 'url',
+				{name:'size', type: 'float'},
+				{name:'lastmod', type:'date', dateFormat:'timestamp'}
+			]
+		});
+	},
+	
+	
+	layout: 'fit',
 	
 	items: [{
 		xtype: 'imgview'
 		
-	}, {
-		xtype: 'pagingtoolbar'
 	}]
 	
 });

@@ -27,6 +27,8 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 		}
 	},
 	
+	cls: 'imgview',
+	
 	tpl: new Ext.XTemplate(
 		'<ul>',
 			'<tpl for=".">',
