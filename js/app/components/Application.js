@@ -12,7 +12,7 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 			user_id: '21075872@N02', // nvidia id
 			perms: 'read',
 			format: 'json',
-			per_page: 20
+			per_page: 50
 		},
 		
 		smallImgUrlTpl: 'http://farm{farm}.staticflickr.com/{server}/{id}_{secret}_s.jpg',
