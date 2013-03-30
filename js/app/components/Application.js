@@ -12,10 +12,11 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 			user_id: '21075872@N02', // nvidia id
 			perms: 'read',
 			format: 'json',
-			perpage: 20
+			per_page: 20
 		},
 		
-		imgUrlTpl: 'http://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg'
+		smallImgUrlTpl: 'http://farm{farm}.staticflickr.com/{server}/{id}_{secret}_s.jpg',
+		largeImgUrlTpl: 'http://farm{farm}.staticflickr.com/{server}/{id}_{secret}_b.jpg'
 
 	},
 	
@@ -32,10 +33,14 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 	
 	initStore: function() {
 		var me = this,
-			store = new Ext.data.Store({
+		store = new Ext.data.Store({
 			baseParams: this.config.flickrParams,
 
 			autoLoad: true,
+			
+			paramNames: {
+				limit : 'per_page'
+			},
 			proxy: new Ext.data.ScriptTagProxy({
 				url: 'http://api.flickr.com/services/rest/',
 				callbackParam: 'jsoncallback'
@@ -43,12 +48,13 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 			reader: new Ext.data.JsonReader({
 				root: 'photos.photo',
 				successProperty: 'stat',
+				totalProperty: 'photos.total',
 				fields: [
-				 "id", 
-				 "secret", 
-				 "server", 
-				 "farm", 
-				 "title" 
+				"id", 
+				"secret", 
+				"server", 
+				"farm", 
+				"title" 
 				]
 			}),
 			listeners: {
@@ -58,6 +64,14 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 				},
 				loadexception: function() {
 					console.log('Ошибка', arguments); 
+				},
+				beforeload: function(store, options) {
+					console.log(options);
+					var p = options.params;
+					p.page = ~~(p.start / this.baseParams.per_page) + 1;
+					
+
+					
 				}
 			}
 		});
@@ -69,9 +83,19 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 		this.viewport = new Ext.Viewport({
 			layout: 'fit',
 			items: [{
-				xtype: 'imgview',
-				imgUrlTpl: this.config.imgUrlTpl,
-				store: this.store
+				xtype: 'panel',
+				bbar: new Ext.PagingToolbar({
+					store: this.store,  
+					displayInfo: true,
+					pageSize: this.config.flickrParams.per_page
+
+				}),
+				items: [{
+					xtype: 'imgview',
+					smallImgUrlTpl: this.config.smallImgUrlTpl,
+					largeImgUrlTpl: this.config.largeImgUrlTpl,
+					store: this.store
+				}]
 			}]
 		});
 	}

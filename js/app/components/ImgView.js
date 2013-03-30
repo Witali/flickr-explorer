@@ -6,10 +6,13 @@ Ext.ns('Ext.ux');
 
 Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 	
-	constructor: function() {
+	constructor: function(cfg) {
 		
 		
 		Ext.DataView.apply(this, arguments);
+		
+		this.smallImgUrlTpl = (new Ext.Template(this.smallImgUrlTpl));
+		this.smallImgUrlTpl.compile();
 	},
 	
 	showLargeImg: function(url) {
@@ -19,6 +22,12 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 	
 	hideLargeImg: function() {
 		
+	},
+	
+	prepareData: function(data) {
+		
+		data.smallImgUrl = this.smallImgUrlTpl.apply(data);
+		return data;
 	},
 	
 	listeners: {
@@ -33,7 +42,7 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 		'<ul>',
 			'<tpl for=".">',
 				'<li data-id="{id}" class="imgview-thumbnail-block">',
-					'<img class="imgview-thumbnail" src="{url}" />',
+					'<img class="imgview-thumbnail" src="{smallImgUrl}" />',
 					'<strong>{title}</strong>',
 				'</li>',
 			'</tpl>',
