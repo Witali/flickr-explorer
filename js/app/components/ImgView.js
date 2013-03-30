@@ -168,16 +168,19 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 		else {
 			var lastParams = Ext.apply({
 				start: 0
-			}, store.baseParams, store.lastOptions && store.lastOptions.params);
+			}, store.baseParams, store.lastOptions && store.lastOptions.params),
+			start = lastParams.start - lastParams.per_page;
 			
-			store.load({
-				params: {
-					start: lastParams.start + lastParams.per_page
-				},
-				callback: function() {
-					me.select(0);
-				}
-			});
+			if(start < store.getTotalCount()) {
+				store.load({
+					params: {
+						start: lastParams.start + lastParams.per_page
+					},
+					callback: function() {
+						me.select(0);
+					}
+				});
+			}
 		}
 	},
 
@@ -193,16 +196,19 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 		else {
 			var lastParams = Ext.apply({
 				start: 0
-			}, store.baseParams, store.lastOptions && store.lastOptions.params);
+			}, store.baseParams, store.lastOptions && store.lastOptions.params),
+			start = lastParams.start - lastParams.per_page;
 			
-			store.load({
-				params: {
-					start: lastParams.start - lastParams.per_page
-				},
-				callback: function() {
-					me.select(this.getCount() - 1);
-				}
-			});
+			if(start >= 0) {
+				store.load({
+					params: {
+						start: start
+					},
+					callback: function() {
+						me.select(this.getCount() - 1);
+					}
+				});
+			}
 		}
 		
 	},
