@@ -84,6 +84,7 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 			layout: 'fit',
 			items: [{
 				xtype: 'panel',
+				bodyStyle: 'overflow: auto;',
 				bbar: new Ext.PagingToolbar({
 					store: this.store,  
 					displayInfo: true,
