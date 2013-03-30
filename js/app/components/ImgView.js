@@ -57,6 +57,11 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 				me.mask.hide();
 			});
 			
+			this.store.load({
+				start: 0,
+				per_page: 20
+			});
+			
 		}
 	},
 	

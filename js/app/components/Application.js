@@ -76,10 +76,6 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 			}
 		});
 		
-		store.load({
-			start: 0,
-			per_page: 20
-		});
 		this.store = store;
 	},
 	
