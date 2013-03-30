@@ -65,7 +65,7 @@
 	position: fixed;
 	background: black;
 	text-align: center;
-	z-index: 10000;
+	z-index: 1000;
 }
 
 .imgview .imgview-close, .imgview .imgview-next, .imgview .imgview-prev {

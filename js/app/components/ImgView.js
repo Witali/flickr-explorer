@@ -87,11 +87,13 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			imgLargeDom = imgLarge.dom,
 			selectedEl = new Ext.Element(selNode),
 			rec = me.store.getById(selNode.getAttribute('data-id')),
-			myMask = new Ext.LoadMask(selNode, {msg:"Please wait..."});
+			myMask = new Ext.LoadMask(animate ? selNode : imgBlock, {msg:"Please wait..."}),
+			maskTimeout;
 			
-		if(animate) {	
+		// защита от "вспышек"
+		maskTimeout = setTimeout(function() {
 			myMask.show();
-		}
+		}, 100)
 		
 		var setEndState = function() {
 				imgBlock.setStyle('height', '100%');
@@ -101,7 +103,9 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 		// Предварительно загружаем фото
 		var img = new Image();
 		img.onload = function() {
+			clearTimeout(maskTimeout);
 			myMask.hide();
+			
 			imgLargeDom.setAttribute('src', img.src);
 			
 			var fromRegion = selectedEl.getRegion(),
