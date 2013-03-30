@@ -9,7 +9,7 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 	constructor: function() {
 		
 		
-		Ext.DataView.call(this, arguments);
+		Ext.DataView.apply(this, arguments);
 	},
 	
 	showLargeImg: function(url) {
