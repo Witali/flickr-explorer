@@ -36,7 +36,7 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 		store = new Ext.data.Store({
 			baseParams: this.config.flickrParams,
 
-			autoLoad: true,
+			autoLoad: false,
 			
 			paramNames: {
 				limit : 'per_page'
@@ -76,6 +76,10 @@ Ext.ux.Application = Ext.extend(Ext.Component, {
 			}
 		});
 		
+		store.load({
+			start: 0,
+			per_page: 20
+		});
 		this.store = store;
 	},
 	

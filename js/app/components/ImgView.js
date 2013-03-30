@@ -40,8 +40,9 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 	},
 	
 	listeners: {
-		'dblclick': function() {
-			this.showLargeImg();
+		
+		selectionchange: function(me, selections) {
+			this.showLargeImg(true);
 		},
 		
 		'render': function() {
@@ -58,6 +59,11 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			
 		}
 	},
+	
+	refresh: function() {
+		Ext.ux.ImgView.superclass.refresh.call(this);
+		this.addLargeImgBlockListeners();
+	},
 		
 	precompileTpl: function() {
 		for(var i = 0, n = arguments.length, name; i < n; ++i ) {
@@ -67,22 +73,30 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 		}
 	},
 	
-	showLargeImg: function(url) {
+	showLargeImg: function(animate) {
+		var selNode = this.getSelectedNodes()[0];
+		if(!selNode) {
+			return;
+		}
+		
 		var me = this,
 			body = me.el,
 			ownEl = me.ownerCt.el,
-			closeBtn = body.select('.imgview-close'),
 			imgBlock = body.select('.imgview-large-block'),
 			imgLarge = body.select('img.imgview-large').item(0),
-			imgLargeDom = imgLarge.dom;
-
-        var selNode = me.getSelectedNodes()[0],
-			selectedEl = new Ext.Element(selNode);
+			imgLargeDom = imgLarge.dom,
+			selectedEl = new Ext.Element(selNode),
+			rec = me.store.getById(selNode.getAttribute('data-id')),
+			myMask = new Ext.LoadMask(selNode, {msg:"Please wait..."});
+			
+		if(animate) {	
+			myMask.show();
+		}
 		
-		var rec = me.store.getById(selNode.getAttribute('data-id'));
-
-		var myMask = new Ext.LoadMask(selNode, {msg:"Please wait..."});
-		myMask.show();
+		var setEndState = function() {
+				imgBlock.setStyle('height', '100%');
+				imgBlock.setStyle('width', '100%');
+			};
 		
 		// Предварительно загружаем фото
 		var img = new Image();
@@ -94,31 +108,102 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 				toRegion = ownEl.getRegion();
 			
 			imgBlock.setDisplayed(true);
-			imgBlock.animate({
-				opacity: {to: 1, from: 0},
-				top: {to: 0, from: fromRegion.top},
-				left: {to: 0, from: fromRegion.left},
-				height: {to: toRegion.bottom, from: fromRegion.bottom - fromRegion.top},
-				width: {to: toRegion.right, from: fromRegion.right - fromRegion.left}
-			},
-			0.35, function() {
-				imgBlock.setStyle('height', '100%');
-				imgBlock.setStyle('width', '100%');
-				
-				
-			});
+			if(animate) {
+				imgBlock.animate({
+					opacity: {to: 1, from: 0},
+					top: {to: 0, from: fromRegion.top},
+					left: {to: 0, from: fromRegion.left},
+					height: {to: toRegion.bottom, from: fromRegion.bottom - fromRegion.top},
+					width: {to: toRegion.right, from: fromRegion.right - fromRegion.left}
+				}, 0.35, setEndState);
+			}
+			else {
+				setEndState();
+			}
 		};
-		
-		closeBtn.on('click', function() {
-			me.hideLargeImg();
-		}, me, {
-			single: true
-		});
 		
 		img.src = this.largeImgUrlTpl.apply(rec.data);
 	
 	},
 	
+	// запрещаем снимать выделение при клике не на элемент
+	// предотвращаем сброс выделения при щелчке в режиме просмотра фото
+	onContainerClick: Ext.emptyFn,
+	
+	addLargeImgBlockListeners: function() {
+		var me = this,
+			body = me.el,
+			closeBtn = body.select('.imgview-close'),
+			nextBtn = body.select('.imgview-next'),
+			prevBtn = body.select('.imgview-prev');
+		
+		closeBtn.on('click', function() {
+			me.hideLargeImg();
+		});
+		
+		nextBtn.on('click', function() {
+			me.showNextLargeImg();
+		});
+		
+		prevBtn.on('click', function() {
+			me.showPrevLargeImg();
+		});
+		
+	},
+	
+	showNextLargeImg: function() {
+		var me = this,
+			nextIndex = me.getSelectedIndexes()[0] + 1,
+			store = me.getStore(),
+			count = store.getCount();
+			
+		if(nextIndex < count) {
+			this.select(nextIndex, false, true);
+			this.showLargeImg();
+		}
+		else {
+			var lastParams = Ext.apply({
+				start: 0
+			}, store.baseParams, store.lastOptions && store.lastOptions.params);
+			
+			store.load({
+				params: {
+					start: lastParams.start + lastParams.per_page
+				},
+				callback: function() {
+					me.select(0);
+				}
+			});
+		}
+	},
+
+	showPrevLargeImg: function() {
+		var me = this,
+			prevIndex = this.getSelectedIndexes()[0] - 1,
+			store = me.getStore();
+			
+		if(prevIndex >= 0) {
+			this.select(prevIndex, false, true);
+			this.showLargeImg();
+		}
+		else {
+			var lastParams = Ext.apply({
+				start: 0
+			}, store.baseParams, store.lastOptions && store.lastOptions.params);
+			
+			store.load({
+				params: {
+					start: lastParams.start - lastParams.per_page
+				},
+				callback: function() {
+					me.select(this.getCount() - 1);
+				}
+			});
+		}
+		
+	},
+
+
 	hideLargeImg: function() {
 		var imgBlock = this.el.select('.imgview-large-block');
 		imgBlock.setDisplayed(false); 
