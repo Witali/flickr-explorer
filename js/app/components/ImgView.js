@@ -100,9 +100,15 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			myMask.show();
 		}, 100)
 		
+		var fromRegion = selectedEl.getRegion(),
+			toRegion = ownEl.getRegion(),
+			toWidth = toRegion.right,
+			toHeight = toRegion.bottom;
+				
 		var setEndState = function() {
 				imgBlock.setStyle('height', '100%');
 				imgBlock.setStyle('width', '100%');
+
 			};
 		
 		// Предварительно загружаем фото
@@ -113,8 +119,30 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			
 			imgLargeDom.setAttribute('src', img.src);
 			
-			var fromRegion = selectedEl.getRegion(),
-				toRegion = ownEl.getRegion();
+			// для правильного масштабирования нужно установить 100% по большей ширине
+			if(img.width > toWidth || img.height > toHeight) {
+				var kx = img.width / toWidth,
+					ky = img.height / toHeight;
+					
+				if(kx > ky) {
+					imgLarge.setSize({
+						width: '100%', 
+						height: 'auto'
+					});
+				}
+				else {
+					imgLarge.setSize({
+						width: 'auto', 
+						height: Ext.isGecko ? toHeight : '100%'
+					});
+				}
+			}
+			else {
+				imgLarge.setSize({
+					width: 'auto', 
+					height: 'auto'
+				});
+			}
 			
 			imgBlock.setDisplayed(true);
 			if(animate) {
