@@ -66,6 +66,21 @@
 	background: black;
 	text-align: center;
 	z-index: 1000;
+	text-shadow: 0 0 10px #000;	
+}
+
+.imgview-title {
+	font-size: 30px;
+	line-height: 30px;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	width: 100%;
+	color: white;
+	text-align: center;
+	background-color: RGBA(50%, 50%, 50%, 0.5);
 }
 
 .imgview .imgview-close, .imgview .imgview-next, .imgview .imgview-prev {
@@ -73,7 +88,6 @@
 	line-height: 60px;
 	position: absolute;
 	text-decoration: none;
-	text-shadow: 0 0 10px #333;
 	color: white;
 	cursor: pointer;
 }

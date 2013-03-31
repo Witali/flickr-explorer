@@ -23,6 +23,7 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			'<a class="imgview-close">&times;</a>',
 			'<a class="imgview-next">&gt;</a>',
 			'<a class="imgview-prev">&lt;</a>',
+			'<div class="imgview-title"></div>',
 		'</div>'
 		),
 			
@@ -88,6 +89,7 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			body = me.el,
 			ownEl = me.ownerCt.el,
 			imgBlock = body.select('.imgview-large-block'),
+			title = body.select('.imgview-title'),
 			imgLarge = body.select('img.imgview-large').item(0),
 			imgLargeDom = imgLarge.dom,
 			selectedEl = new Ext.Element(selNode),
@@ -105,11 +107,14 @@ Ext.ux.ImgView = Ext.extend(Ext.DataView, {
 			toWidth = toRegion.right,
 			toHeight = toRegion.bottom;
 				
+		title.update(rec.get('title'));
+		title.hide();
+		
 		var setEndState = function() {
-				imgBlock.setStyle('height', '100%');
-				imgBlock.setStyle('width', '100%');
-
-			};
+			imgBlock.setStyle('height', '100%');
+			imgBlock.setStyle('width', '100%');
+			title.show();
+		};
 		
 		// Предварительно загружаем фото
 		var img = new Image();
